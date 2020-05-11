@@ -1,0 +1,244 @@
+
+\documentclass[a4paper, 11pt]{article}
+\usepackage[english,slovak]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1, IL2]{fontenc}
+\usepackage[left=2.5cm,text={16cm, 24cm},top=3cm]{geometry}
+
+\usepackage{parskip}
+
+\usepackage{mdwlist}
+\usepackage{amssymb}
+\usepackage{wrapfig}
+\usepackage[titletoc]{appendix}
+
+\usepackage{graphicx}
+\usepackage{caption}
+
+\usepackage{listings}
+\usepackage{color}
+\usepackage{xcolor}
+
+\usepackage{environ}
+\usepackage{tikz}
+
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{float}
+
+
+%\usepackage{amsthm}
+\definecolor{mygray}{rgb}{0.4,0.4,0.4}
+\definecolor{myblue}{rgb}{0,0.4,0.9}
+\definecolor{myorange}{rgb}{1.0,0.4,0}
+\definecolor{light-gray}{gray}{0.95}
+
+\usepackage[framemethod=default]{mdframed}
+
+\NewEnviron{elaboration}{
+\par
+\begin{tikzpicture}[every node/.style={inner sep=10,outer sep=0}]
+\node[fill=light-gray, rectangle,minimum width=0.9\textwidth] (m) {\begin{minipage}{0.96\textwidth}\BODY\end{minipage}};
+\draw[dashed] (m.south west) rectangle (m.north east);
+\end{tikzpicture}
+}
+\setlength\parindent{24pt}
+
+\lstset{
+language=C++,
+directivestyle={\color{black}},
+%backgroundcolor=\color{light-gray},
+xleftmargin=0.5cm,
+basicstyle=\footnotesize\ttfamily\color{black},
+commentstyle=\color{mygray},
+emph={int,char,double,float,unsigned,void,std::size_t,"std::hash",size_t,long, flow_t, record_t},
+emphstyle={\color{myorange}},
+frame=none,
+numbers=left,
+numbersep=5pt,
+numberstyle=\tiny\color{mygray},
+keywordstyle=\bfseries\color{myblue},
+showspaces=false,
+showstringspaces=false,
+stringstyle=\color{myorange},
+tabsize=3,
+otherkeywords={!=,==,->,<<-,.,;,(,),\},\{,],[, =,&,<<,>>,+,\,,\#define, end, then,^, downto,to},
+}
+
+\global\mdfdefinestyle{exampledefault}{%
+linecolor=lightgray, innerleftmargin=0,innerrightmargin=0,innertopmargin=2, innerbottommargin=0, linewidth=1
+}
+
+\newenvironment{mymdframed}[1]{%
+\mdfsetup{%
+frametitle={\small\colorbox{white}{\,#1\,}},
+frametitleaboveskip=-\ht\strutbox,
+frametitlealignment=\raggedright
+}%
+\vspace{0.5cm}
+\begin{mdframed}[style=exampledefault]
+}{\end{mdframed}}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+
+\newenvironment{proof}[1][Proof]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+\newenvironment{definition}[1][Definition]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+\newenvironment{example}[1][Example]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+\newenvironment{remark}[1][Remark]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+
+\newcommand{\qed}{\nobreak \ifvmode \relax \else
+      \ifdim\lastskip<1.5em \hskip-\lastskip
+      \hskip1.5em plus0em minus0.5em \fi \nobreak
+      \vrule height0.75em width0.5em depth0.25em\fi}
+\begin{document}
+
+\input{title.tex}
+\newpage
+\tableofcontents
+\newpage
+\section{Abstrakt}
+Práca sa zaoberá dôkazom existencie rýdzeho Nashovo ekvilibria(angl. Pure Nash Equilibrium) v tajnej aukcií s druhou cenou. Dôkaz čerpá z \cite{Main}, je rozdelený do dvoch krokov a predpokladá asymetrické tajné ohodnotenia hráčmi.
+
+\section{Slovník pojmov}
+hráč - Bidder \newline{}
+predmet aukcie - Auctioned item \newline{}
+zisk - payoff \newline{}
+označenie $b$ - sázka - Bid $b$ \newline{}
+označenie $X_{j}$ - hráčovo tajné ohodnotenie - Bidder's private value of the item \newline{}
+
+\section{Úvod}
+Tajná aukcia s prvou cenou (angl. Sealed First-price auction)
+\section{Krok č. 1 - diskretizácia sázok}
+Predpokladajme N hráčov s nezávislým rozdelením ich privátnych ohodnotení predmetu aukcie $\omega_{i}$.
+Hráč $i$ má sázku $X_{i}$ rozloženú na intervale $\chi_{i} = <0,\omega_{i}>$ na základe distribučnej funkcie $F_{i}$ s funkciou hustoty $f_{i}$.
+
+Nech maximálne privátne ohodnotenie spomedzi všetkých hráčov je $\omega = \max_{i} \omega_{i}$. Definujme potom priestor všetkých možných racionálnych sázok ako:
+\begin{equation}
+\beta^{T} = \{\frac{t}{T}\omega : t = 0,1,...,T\}
+\end{equation}
+kde $\frac{\omega}{T}$ predstavuje hodnotu minimálneho inkrementu sázky. \newline{}\newline{}
+\textit{Poznámka autora: V praxi sa najčastejšie stretávame s peňažnými ohodnoteniami, ktoré zpravidla majú nejaký minimálny inkrement(centy, haliere, pri väčších sumách zaokrúhlené a pod.).}\newline{}\newline{}
+Hodnotu konkrétnej sázky hráča $i$ značíme:
+\begin{equation}
+b_{i}^{t} = \frac{t}{T}\omega
+\end{equation}
+Stratégia hráča $i$ s diskrétnymi sázkami je funkcia: $\beta_{i}:\chi_i \to \beta^{T}$. Pre konštantné stratégie $\beta_{j}$ hráčov $j \ne i$ definujme $H_{i}(b^{t})$, ako pravdepodobnosť, že hráč $i$ so sázkou $b^{t}$, pre pevne zvolené $t = 0,1,...,T$, vyhrá:
+\begin{equation}
+\label{g1}
+H_{i}(b^{t}) = Prob[max_{j \ne i}\beta_{j}(X_{j})\leq b^{t-1}] + \frac{1}{k+1}Prob[\max_{j \ne i} \beta_{j}(X_{j}) = b^{t}]
+\end{equation}
+Prvý člen súčtu predstavuje pravdepodobnosť, že sázka $b^{t}$ je jediná najvyššia spomedzi všetkých a druhý člen predstavuje pravdepodobnosť, kedy práve $k$ hráčov vsadilo rovnakú sázku $b^{t}$ a o víťazovi aukcie sa podľa jej definície rozhoduje náhodne spomedzi hráčov s najvyššou sázkou.
+
+Sázka $b_{i} \in \beta^{T}$ je \textit{best response} pri privátnom ohodnotení $X_{i}$ hráča $i$ práve vtedy, keď maximalizuje jeho zisk vhľadom ku sázkam ostatných hráčov $\beta_{-i}$, čo platí pre všetky ostatné racionálne sázky $b \in \beta^{T} \setminus \{b_{i}\}$.
+\begin{equation}
+\label{g2}
+H_{i}(b_{i})(X_{i} - b_{i}) \geq H_{i}(X_{i} - b)
+\end{equation}
+Označme ju ako $BR_{i}(x_{i})$, teda množinu \textit{best responses} pri privátnom ohodnotení $X_{i}$.
+
+\begin{lemma}
+neklesajúcosť $BR_{i}(X_{i})$ pre rastúce $X_{i}$ vyjadríme pre ľubovoľné $\beta_{-i}$ a $0 < X_{i}^{'} < X_{i}^{''}$:
+\begin{equation}
+\min BR_{i}(X_{i}^{''}) \geq \max BR_{i}(X_{i}^{''})
+\end{equation}
+\end{lemma}
+\begin{proof}
+Stanovme $b_{i}^{'} = \max BR_{i}(X_{i}^{'})$. Podľa definície pre všetky $b < b_{i}^{'}; b \in \beta^{T}$ platí:
+\begin{equation}
+H_{i}(b_{i}^{'})(X_{i}^{'} - b_{i}^{'}) \geq H_{i}(b)(X_{i}^{'} - b)
+\end{equation}
+Po preusporiadaní dostávame:
+\begin{equation}
+\label{g3}
+H_{i}(b_{i}^{'}) - H_{i}(b))X_{i}^{'} \geq H_{i}(b_{i}^{'})b_{i}^{'} - H_{i}(b)b
+\end{equation}
+Pre $b < b_{i}^{'}$ musí platiť $H_{i}(b_{i}^{'}) - H_{i}(b) > 0$, nakoľko $H_{i}$ je neklesajúca. Potom $b < b_{i}^{'}$ implikuje $H_{i}(b_{i}^{'}) - H_{i}(b) \geq 0$.
+
+V prípade, že $H_{i}(b_{i}^{'}) - H_{i}(b) = 0$ potom $b_{i}^{'}$ nemôže byť \textit{best response}, nakoľko by to znamenalo, že hráč môže znížiť sázku $b_{i}^{'}$ na $b_{i}$, bez toho aby sa znížili jeho šance na výhru.
+
+Z formule \ref{g3} pre $X_{i}^{''} > X_{i}^{'}$ a pre všetky $b < b^{'}_{i}; b \in \beta^{T}$ môžeme usudiť, že platí:
+\begin{equation}
+H_{i}(b_{i}^{'}) - H_{i}(b))X_{i}^{''} > H_{i}(b_{i}^{'})b_{i}^{'} - H_{i}(b)b
+\end{equation}
+Preto, keď je hráčovo privátne ohodnotenie $X_{i}^{''}$, je striktne dominantné vsadiť $b_{i}^{'}$ než inú menšiu sázku. 
+
+Z predošlého vyplýva, že akákoľvek \textit{best response} keď privátne ohodnotenie je $X_{i}^{''}$, je prinajmenšom tak veľká ako $b_{i}^{'}$, formálne $\min BR_{i}(X_{i}^{''}) \geq b_{i}^{'}$. \qed
+\end{proof}
+
+Stratégia hráča $i$ $\beta:\chi_{i}\rightarrow \beta^{T}$ je \textit{best response} na $\beta_{-i}$ ak pre všetky $X_{i}$, $\beta_{i}(X_{i})$ je \textit{best respone} mať privátne ohodnotenie $X_{i}$.
+
+Vzhľadom na formulu \ref{g1} je \textit{best response} stratégia $\beta:\chi_{i}\rightarrow \beta^{T}$ neklesajúca funkcia s konečným počtom nespojitostí - \textit{tzv. schodová funkcia}. 
+
+Preto táto funkcia má $T$ bodov na intervale $<0,\omega_{i}>$, povedzme v usporiadaní $\alpha_{i}^{1} \geq \alpha_{i}^{2} \geq ... \geq \alpha_{i}^{T}$, pre ktoré platí:
+\begin{equation}
+\label{g4}
+\beta_{i}(X_{i}) = b^{t}\ if\ \alpha_{i}^{t} < X_{i} < \alpha_{i}^{t+1}
+\end{equation}
+pričom podľa konvencií $\alpha_{i}^{0} = 0$ a $\alpha_{i}^{T+1} = \omega_{i}$. Poznamenajme, že nie je uvedené, čo sa stane so stratégiou $\beta_{i}$ pre privátne ohodnotenia rovné $\alpha_{i}^{t}$ teda pre $\beta_{i}(\alpha_{i}^{t})$. V takomto prípade je hodnota $\beta_{i}$ buď $b^{t-1}$ alebo $b^{t}$, ale nakoľko je konečný počet takýchto bodov, očakávaný zisk nie je týmto výberom ovplyvnený. Preto, s výnimkou na konečný počet bodov je akýkoľvek $\beta_{i}$, ktorý je \textit{best response}, úplne definovaný vektorom $\alpha_{i} = (\alpha_{i}^{1},\alpha_{i}^{2},...,\alpha_{i}^{T})$. Zjednodušene, akákoľvek $\beta_{i}$, ktorá je \textit{best response} môže byť reprezentovaná vektorom s konečným počtom dimenzií $\alpha_{i}$.
+
+Pre danú stratégiu $\beta_{i}$, ktorá je neklesajúca, ak nejaké $\alpha_{i}$ existuje, ktoré splňuje \ref{g4}, potom $\alpha_{i} \leftrightarrows \beta_{i}$ značí vlastnosť, že $\beta_{i}$ môžeme reprezentovať $\alpha_{i}$ a platí to aj opačne. V nasledujúcom texte je zápis $\alpha_{i}$ a $\beta_{i}$ ekvivalentný a predstavuje stratégiu hráča $i$.
+
+Pre stratégie protihráčov $\alpha_{-i} = (\alpha_{j})_{j \ne i}$, označme $\Gamma_{i}(\alpha_{-i})$ množinu \textit{best response} stratégií hráča $i$, zloženej z vektorov $\alpha_{i} \in [0,\omega_{i}]^{T}$. 
+
+Čo znamená, že existuje nejaké $\beta_{i}$, ktoré je \textit{best response} na $\beta_{-i}$ a $\alpha_{i}  \leftrightarrows \beta_{i}$ a pre všetky $j \ne i; \alpha_{j} \leftrightarrows \beta_{j}$. Mapovanie $\Gamma_{i}(.)$ priraďuje každému elementu $\times_{j \ne i}[0,\omega_{j}]^{T}$ podmnožinu $[0,\omega_{i}]^{T}$ a zodpovedá to pojmu \textit{best response coserpondence}.
+
+Za prvé, pre všetky $\alpha_{-i}$ je množina \textit{best responses} $\Gamma_{i}(\alpha_{-i})$ konvexná množina.  Je to ekvivalentné tvrdenie ako, keď pre nejaké $b_{i}$ je \textit{best response} pri privátnom ohodnotení $X^{'}$ a aj pri privátnom ohodnotení $X^{''}$, potom pre všetky $\alpha \in <0,1>$ je to taktiež \textit{best responses} pre $\alpha X^{'}_{i} + (1 - \lambda)X_{i}^{''}$\textit{pozn. autora: definícia priamky medzi dvoma bodmy.}. Vyplýva to z formule \ref{g2}.
+
+Za druhé poznamenajme, že ak je $(\alpha_{i}^{n},\alpha_{-i}^{n})$ postupnosť konvergujúca do $(\alpha_{i},\alpha_{-i})$ a pre všetky $n$ je $\alpha_{i}^{n} \in \Gamma_{i}(\alpha_{-i}^{n})$, potom $\alpha_{i} \in \Gamma_{i}(\alpha_{-i})$.
+
+Pre všetky $n$ a všetky $j$ označme $\beta_{j}^{n}$ také, že $\alpha_{j}^{n} \leftrightarrows \beta_{j}^{n}$ a označme $\beta_{j}$ také, že $\alpha_{j} \leftrightarrows \beta_{j}$. Definujeme $H_{i}^{n}(.)$ na zákalde formule \ref{g1} a reprezentuje to pravdepodobnosť výhry keď hráči $j \ne i$ hrajú stratégie $\beta_{j}^{n}$. Podobne definujme $H^{i}$ na základe formule \ref{g1}, kde hráči $j \ne i$ hrajú stratégie $\beta_{j}$. Nakoľko platí $\alpha_{-i}^{n} \rightarrow \alpha_{-i}$, a pre všetky $j \ne i, \beta_{j}^{n} \rightarrow \beta_{j}$, takže $H_{i}^{n}(.) \rightarrow H_{i}(.)$ v každom bode $\beta^{T}$. Následne platí, že ak pre všetky $n, \beta_{i}^{n}$ je \textit{best response} na $\beta_{-i}^{n}$ a $(\beta_{i}^{n}, \beta_{-i}^{n}) \rightarrow (\beta_{i}, \beta_{-i})$, potom je $\beta_{i}$ \textit{best response} na $\beta_{-i}$. Z toho vyplýva, že $\alpha_{i} \in \Gamma_{i}(\alpha_{-i})$.
+
+\begin{definition}
+\textbf{Kakutani Fixed Point Theorem} - Označme $Z$ ako neprázdnu, kompaktnú(\textit{pozn. taká ktorá je uzavrená a ohraničená}) a konvexnú množinu. A označme $\Gamma$ reláciu korespondence, ktorá zobrazuje každý prvok $z \in Z$ na neprázdnu podmnožinu $Z$.  Tento teorém postuluje, že v prípade ak $\Gamma$ je konvexne ohodnotená, teda pre každě $z, \Gamma(z)$ je konvexná a $\Gamma$ je uzvretá pre všetky $z$, teda pre všetky $(y^{n},z^{n}) \rightarrow (y,z)$ a pre všetky $n, y^{n} \in \Gamma(z^{n})$ implikuje, že $y \in \Gamma(z)$. Potom existuje pevný bod $z^{*}$, taký že $z^{*} \in \Gamma(z^{*})$.
+\end{definition}
+
+\begin{definition}
+\textbf{Existencia ekvilibria} - V našom kontexte, definujeme $Z = \times_{i}[0,\omega_{i}]^{T}$ a $\Gamma(\alpha) = \times_{i}\Gamma_{i}(\alpha_{-i})$, pričom každé $\Gamma_{i}$  je hráča $i$ \textit{best response correspondence}. Nakoľko bolo argumentované, že Gamma  je konvexne ohodnotená a má uzavretý graf. Kakutani fixed point theorem potom implikuje, že existuje pevný bod $\alpha^{*}$, taký že $\alpha^{*} \in \Gamma(\alpha^{*})$. Ak definujeme stratégiu $\beta_{i}^{*}$ podľa formule \ref{g4}, teda $\alpha_{i}^{*} \leftrightarrows \beta_{i}^{*}$, potom $\beta^{*} = (\beta_{1}^{*}, \beta_{2}^{*}, \dots, \beta_{N}^{*})$ tvorí evilibrium tajnej aukcie s prvou cenou s diskrétnym univerzom sázok.
+\end{definition}
+
+\begin{proposition}
+Predpokladajme tajnú akciu s prvou cenou, kde všetky sázky ležia na množine $\beta^{T}$. Potom existuje ekvilibrium tejto aukcií, v ktorom sa každý hráč riadi neklesajúcimi stratégiami.
+\end{proposition}
+
+\section{Krok č. 2 - hranice ekvilibria pre nekončne malý inkrement sázky}
+Táto časť dôkazu nie je z matematického dokazovania v čerpanom texte úplná, sú v nej spomenuté iba hlavné idey dôkazu. Nekonečne malý inkrement sázky budeme v tejto sekcií reprezentovať nekonečným univerzom $T$. Pre primentutie, univerzum sázok bol definovaný  $\beta^{T} = \{\frac{t}{T}\omega : t = 0,1,...,T\}$, teda ako zlomok maximálnej sázky v aukcií.
+\newline{}\newline{}
+\textit{Poznámka autora: V praxi sa, aj napriek prirodzenej diskretizácií peňažného ohodnotenia, dá generalizovať prípad sázkok $X,Y ;X << Y$, tak že sázka $Y$ je nekonečne veľká vzhľadom na sázku $X$. Vzhľadom na sázku $Y$ je hodnota minimálneho inkrementu sázky nekonečne malá.}\newline{}\newline{}
+V predošlej sekcií sme obmedzovali hráčov hrať na univerze diskrétnych sázok. Ukázali sme, že pre ľubovoľne veľké takéto univerzum $T$ existuje stratégia, ktorá je rýzdim nashovým ekvilibriom, označme ju $\beta^{*}(T)$, v ktorej každý hráč má neklesajúcu stratégiu jeho privátneho ohodnotenia. Táto sekcia sa zaoberá existenciou ekvilibria pre nekonečné veľké $T$.
+
+V prvom rade je možné ukázať, že existuje postupnosť rýdzeho ekvilibria strategií, ktorá je podmnožinou $\beta^{*}(T)$. Táto postupnosť konverguje ku vektoru neklesajúcich stratégií $\beta^{*}$, v aukcií s neobmedzene veľkými sázkami. Navyše, konvergencia je rovnomerná takmer všade. 
+
+Za druhé, môžeme formulovať, že $\beta^{*}$ je súčasťou ekvilibria aukcie s neobmedzenými sázkami. 
+
+Ak pre všetkých hráčov $i$, ich limitujúce stratégie $\beta^{*}_{i}$ strikte rástli, tak predošlé platí. Je to pretože, v tomto prípade \textit{pozn. nejasný pojem väzieb(angl. ties)} je väzba medzi dvoma hodnotami $\beta^{*}_{i}$ nulová. Posledný a hlavný krok je, že postupnosť $\beta^{*}(T)$ konverguje do $\beta^{*}$ rovnomerne, takmer všade. 
+
+\textit{Autor práce posledným úvahám dôkazu nie celkom rozumie.}
+
+\section{Záver}
+Práca sa venovala hlavným krokom dôkazu existencie ekvilibria v tajnej aukcií s prvou cenou.
+
+V prvom kroku bol zavedený diskrétny univerzum sázok a odvodený význam \textit{best response} na ňom. Následne bola dokázaná neklesajúcosť \textit{best response} s rastúcim privátným ohodnotením. Ďalej bol definovaný izomorfismus medzi univerzom stratégií a vektorom sázok. Nasledovalo odvodenie reláce korespondence na vektore stratégií, ako podmnožina kartézskeho súčinu vektoru \textit{best response} strategií, hráča $i$ na stratégie ostatných hráčov. Ďalej sa ukázalo, že definičný obor tak aj obor hodnôt tejto reláce je konvexná množina. Posledným úkonom bolo ukázanie, že táto relácia splňuje podmienky dané Kakutaniho fixed point theorémom o existencií pevných bodoch korespondencie. Tým bola existencia ekvilibria dokázaná.
+
+V druhom kroku sa uvažovalo nekonečne veľké univerzum sázok a následne sa dokázalo, že funkcia \textit{best response} konverguje do pevného bodu ekvilibria. Tejto časti dôkazu autor  práce najmenel porozumel.
+
+Do značnej miery je dodržiavaná forma a obsah textu, z ktorého bol dôkaz čerpaný. Za hlavný výsledok práce možno považovať vzdelávací prínos autora práce v oblasti teorie her, matematiky a metód dokazovania v spojení s uvedeným dôkazom. Taktiež sa néda vylúčiť, že preklad dôkazu do spisovnej slovenčiny nemôže byť pre niekoho prínosným.
+ 
+Autor práce si je plne vedomý, že sa predpokladá preukázanie zvládnutia problematiky. A tento text nemusí byť toho dostatočným dôkazom.
+
+Pokračovaním práce by mala byť identifikácia menej jasných krokov dôkazu treťou osobou a ich následný podrobnejší výklad. Uvedený dôkaz nie je kompletný a preto jedno z ďaľších pokračovaní je doplnenie chybajúcich krokov dôkazu z iných zdrojov, hlavne zo zdrojov ktoré uvádza autor článku.
+
+Prácu by som hodnotil ako prínosnú, ale aj ako nie celkom úspešnú. Pretože sa mne, autorovi práce, nepodarilo porozumieť všetkým krokom dôkazu.
+\newpage{}
+\bibliographystyle{plain}
+\begin{flushleft}
+\bibliography{literatura} % viz. literatura.bib
+\end{flushleft}
+
+\end{document}
